@@ -8,36 +8,27 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import {
-  mainnet,
+  // mainnet,
   polygon,
-  optimism,
-  arbitrum,
+  // optimism,
+  // arbitrum,
   zkSync,
-  hardhat,
-  bsc,
+  bscTestnet,
+  // bsc,
 } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-
-import Table from './components/Table';
-import Cards from './components/Cards';
-import Layout from './components/layout';
+import { polygonMumbai } from './utils/networks';
 
 const { chains, publicClient } = configureChains(
-  [bsc, mainnet, optimism, arbitrum],
+  // [bsc, mainnet, optimism, arbitrum],
+  [bscTestnet, polygonMumbai],
   [
     // alchemyProvider({ apiKey: 'ZbcJUctTzRg0qySTHx0jmolpmxP-5V3g' }),
     publicProvider(),
   ],
-  [
-    jsonRpcProvider({
-      rpc: (chain) => ({
-        https: `https://bsc-dataseed.binance.org/`,
-      }),
-    }),
-  ]
 );
 
 const { connectors } = getDefaultWallets({
@@ -52,36 +43,11 @@ const wagmiConfig = createConfig({
   publicClient,
 });
 
-// const router = createBrowserRouter([
-//   {
-//     element: <Layout />,
-//     children: [
-      
-//       {
-//         path: '/',
-//         element: <Table />,
-//       },
-//       {
-//         path: '/cards',
-//         element: <Cards />,
-//       }
-     
-//     ],
-//   },
-// ]);
-
-
-// const root = ReactDOM.createRoot(document.getElementById('root'));
 createRoot(document.getElementById('root')).render(
   <WagmiConfig config={wagmiConfig}>
     <RainbowKitProvider chains={chains}>
-      {/* <RouterProvider router={router} /> */}
       <App/>
     </RainbowKitProvider>
   </WagmiConfig>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// ();

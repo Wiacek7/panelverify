@@ -1,5 +1,32 @@
 [
   {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableInvalidOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableUnauthorizedAccount",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -109,6 +136,12 @@
       {
         "indexed": false,
         "internalType": "string",
+        "name": "githubUrl",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
         "name": "socialUrl",
         "type": "string"
       },
@@ -129,8 +162,17 @@
     "type": "event"
   },
   {
-    "stateMutability": "payable",
-    "type": "fallback"
+    "inputs": [],
+    "name": "QFRounds",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [
@@ -185,14 +227,27 @@
         "type": "address"
       },
       {
-        "internalType": "uint256[4]",
+        "internalType": "uint256[2][4]",
         "name": "rewardTiers",
-        "type": "uint256[4]"
+        "type": "uint256[2][4]"
       }
     ],
     "name": "addRewardTokenTier",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "buildPointAddress",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -283,6 +338,26 @@
   },
   {
     "inputs": [],
+    "name": "emergencyWithdrawBNB",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "_tokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "emergencyWithdrawERC20",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getContributedProject",
     "outputs": [
       {
@@ -308,7 +383,7 @@
             "type": "uint256"
           }
         ],
-        "internalType": "struct Crowdfunding.ProjectArray[]",
+        "internalType": "struct CrowdFunding.ProjectArray[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -405,6 +480,11 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "name": "rewardTokensTiers",
@@ -424,6 +504,11 @@
         "internalType": "address",
         "name": "",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "name": "rewards",
@@ -440,6 +525,32 @@
   {
     "inputs": [
       {
+        "internalType": "contract IERC20",
+        "name": "tokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setBuildPointAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_qfRounds",
+        "type": "address"
+      }
+    ],
+    "name": "setQFRounds",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "contributor",
         "type": "address"
@@ -448,9 +559,9 @@
     "name": "showRewardUser",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "uint256[2]",
         "name": "",
-        "type": "uint256"
+        "type": "uint256[2]"
       }
     ],
     "stateMutability": "view",
@@ -467,9 +578,9 @@
     "name": "showTotalRewardUser",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "uint256[2]",
         "name": "",
-        "type": "uint256"
+        "type": "uint256[2]"
       }
     ],
     "stateMutability": "view",
@@ -481,6 +592,11 @@
         "internalType": "address",
         "name": "",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "name": "totalRewards",
@@ -508,39 +624,14 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "recipientAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "tokenAddress",
-        "type": "address"
-      }
-    ],
-    "name": "withdrawPooledRewards",
+    "inputs": [],
+    "name": "withdrawUserRewards",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "withdrawUserRewards",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "payable",
+    "type": "receive"
   }
 ]

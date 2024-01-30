@@ -1,36 +1,22 @@
-import React from "react";
-import {  useContractRead, useNetwork,useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
-import CrowdFundingContractInterface from '../contracts/abi/Crowdfunding.json';
+import React, { useEffect, useState } from "react";
+import { useNetwork } from 'wagmi';
 import Trs from './Trs';
 
-import addressContract from '../contracts/contant/contentContract.json'
-
-
-const addressBnb = addressContract.addressBnb;
-const addressEth = addressContract.addresseth;
-const addressArbi = addressContract.addressArbi;
-const addressOpti = addressContract.addressOpti;
+import { getProjects } from "../utils";
 
 export const Table = () => {
   const { chain } = useNetwork()
-  
+  const [projects, setProjects] = useState([]);
 
-  let crowdFundingContractConfig = {};
-    if (chain === undefined){
-
-      console.log("plz connect metamask")
-    }else{
-      crowdFundingContractConfig = {
-        address: (chain?.id === 56 ? addressBnb : (chain?.id === 1 ? addressEth : (chain?.id === 10 ? addressOpti : addressArbi))),
-        abi: CrowdFundingContractInterface,
-      };
+  useEffect(() => {
+    const initProjects = async () => {
+      const data = await getProjects(chain.id);
+      setProjects(data);
     }
 
-  const { data: returnAllProjects } = useContractRead({
-    ...crowdFundingContractConfig,
-    functionName: 'returnAllProjects',
-  });
-  console.log(returnAllProjects)
+    if (chain)
+      initProjects()
+  }, [chain])
 
   return (
     <div className="  my-5  mx-5 bg-[#FFFFFF]   ">
@@ -133,14 +119,12 @@ export const Table = () => {
                   </thead>
                   <tbody>
                     {
-                      returnAllProjects?.map((each, index) => {
-                        return(
-                          <Trs key={index} contractAddress={each}/>
-
+                      projects?.map((each, index) => {
+                        return (
+                          <Trs key={index} project={each} />
                         )
                       })
                     }
-                    
                   </tbody>
                 </table>
               </div>
@@ -181,13 +165,13 @@ export const Table = () => {
                 3
               </p>
             </li>
-            
+
             <li className="page-item">
               <p className="page-link relative block py-1.5 px-3 cursor-pointer  border-0  outline-none transition-all duration-300 rounded text-gray-800 hover:text-[#FFFFFF] hover:bg-[#1A75FF] focus:shadow-none">
                 4
               </p>
             </li>
-            
+
             <li className="page-item">
               <p className="page-link relative block py-1.5 px-3 cursor-pointer  border-0  outline-none transition-all duration-300 rounded text-gray-800 hover:text-[#FFFFFF] hover:bg-[#1A75FF] focus:shadow-none">
                 5

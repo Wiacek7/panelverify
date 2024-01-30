@@ -1,70 +1,31 @@
-import {React, useState} from "react";
-import {  useContractRead, useNetwork,useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
-import CrowdFundingContractInterface from '../contracts/abi/Crowdfunding.json';
+import { React, useState } from "react";
+import { useContractRead, useNetwork, useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import ProjectContractInterface from '../contracts/abi/Project.json';
 
-
-import addressContract from '../contracts/contant/contentContract.json'
-
-
-const addressBnb = addressContract.addressBnb;
-const addressEth = addressContract.addresseth;
-const addressArbi = addressContract.addressArbi;
-const addressOpti = addressContract.addressOpti;
-export const Table = ({contractAddress,index}) => {
+export const Table = ({ project }) => {
   const { chain, chains } = useNetwork()
-  const { address, connector, isConnected } = useAccount();
-  console.log(contractAddress , index,"contractAddress , key")
   const [showAndHide, setShowAndHide] = useState(true);
 
-
-  //===============each project contract config=============
   const projectContractConfig = {
-    address: contractAddress,
+    address: project?.id,
     abi: ProjectContractInterface,
   };
-
-  const { data: projectDetails } = useContractRead({
+  //==================read functiuons=============
+  const { data: isRevealed } = useContractRead({
     ...projectContractConfig,
-    functionName: 'getProjectDetails',
+    functionName: 'isRevealed',
   });
 
-  let projectStarter; 
-  let minContribution ;
-  let projectDeadline;
-  let goalAmount ;
-  let noOfContributors;
-  let completedTime ;
-  let currentAmount ;
-  let title;
-  let desc ;
-  let currentState; 
-  let balance ;
-  let website ;
-  let social ;
-  let github;
-  let projectCover;
-  console.log('goalAmount', projectDetails);
+  const { data: isVerified } = useContractRead({
+    ...projectContractConfig,
+    functionName: 'isVerified',
+  });
 
-  if(projectDetails !== undefined ){
-    projectStarter = projectDetails[0];
-    projectDeadline = projectDetails[3];
-    goalAmount = projectDetails[4];
-    noOfContributors= projectDetails[5];
-    completedTime = projectDetails[6];
-    currentAmount = projectDetails[7];
-    title = projectDetails[8];
-    desc = projectDetails[9];
-    currentState = projectDetails[10];
-    balance = projectDetails[11];
-    website = projectDetails[12];
-    social = projectDetails[13];
-    github = projectDetails[14];
-    projectCover = projectDetails[15];
-  }else{
-    console.log("projectDetails is undefined");
-  }
-  //===========verify Project====================
+  const { data: filterTags } = useContractRead({
+    ...projectContractConfig,
+    functionName: 'filterTags',
+  });
+
   const {
     config: verifyProjectConfig,
     error: verifyProjectConfigError,
@@ -83,7 +44,6 @@ export const Table = ({contractAddress,index}) => {
     error: verifyProjectError,
   } = useContractWrite(verifyProjectConfig);
 
-  //===========Show Project====================
   const {
     config: showProjectConfig,
     error: showProjectConfigError,
@@ -103,23 +63,6 @@ export const Table = ({contractAddress,index}) => {
     isSuccess
   } = useContractWrite(showProjectConfig);
 
-//==================read functiuons=============
-  const { data: isRevealed } = useContractRead({
-    ...projectContractConfig,
-    functionName: 'isRevealed',
-  });
-
-  const { data: isVerified } = useContractRead({
-    ...projectContractConfig,
-    functionName: 'isVerified',
-  });
-
-  const { data: filterTags } = useContractRead({
-    ...projectContractConfig,
-    functionName: 'filterTags',
-  });
-  console.log(chain, chains);
-
   const setVerify = () => {
     setVerification?.();
   }
@@ -133,7 +76,7 @@ export const Table = ({contractAddress,index}) => {
       setShowAndHide(true);
     }
   }
-  
+
   return (
     <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 flex items-center">
@@ -144,10 +87,10 @@ export const Table = ({contractAddress,index}) => {
             alt=""
           />
         </div>
-        <span>{projectStarter?.slice(0,15)}...</span>
+        <span>{project?.creator?.slice(0, 15)}...</span>
       </td>
       <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-        {desc?.slice(0,30)}...
+        {project?.desc.slice(0, 30)}...
       </td>
       <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
         {filterTags}
@@ -157,9 +100,9 @@ export const Table = ({contractAddress,index}) => {
       </td>
 
       <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-        {Number(noOfContributors)}
+        {project?.noOfContributors}
       </td>
-      {isVerified ? 
+      {isVerified ?
         <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
           <span className="bg-[#ECFBE6] text-[#3BB900] rounded-md py-1  font-bold px-2">
             Verified
@@ -170,21 +113,20 @@ export const Table = ({contractAddress,index}) => {
             UnVerified
           </span>
         </td>}
-      
 
       <td class="text-sm  font-light px-6 py-4 whitespace-nowrap">
         <button
           disabled={isVerified ? true : false}
-          onClick={() => {
-            setVerify();
-          }}
+          onClick={
+            setVerify
+          }
           className="bg-[#1A75FF] bg-Chinese-Blue text-blue w-full sm:w-auto text-Pure-White rounded-4xl py-1 px-2.5 font-medium "
         >
           setVerify
         </button>
       </td>
 
-      {isRevealed ? 
+      {isRevealed ?
         <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
           <span className="bg-[#ECFBE6] text-[#3BB900] rounded-md py-1  font-bold px-2">
             Revealed
@@ -195,7 +137,7 @@ export const Table = ({contractAddress,index}) => {
             UnRevealed
           </span>
         </td>}
-      
+
 
       <td class="text-sm  font-light px-6 py-4 whitespace-nowrap">
         <button
@@ -208,7 +150,7 @@ export const Table = ({contractAddress,index}) => {
           {showAndHide ? "setShow" : "setHide"}
         </button>
       </td>
-      
+
     </tr>
   );
 };
